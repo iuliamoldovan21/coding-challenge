@@ -1,6 +1,6 @@
 ## Web Operations Development Coding Challenge
 
-Starting from this template, you will need to implement the next requests:
+Starting from this template, you will need to implement the following tasks:
 
 - Connect to the Google Books API to search for books (https://www.googleapis.com/books/v1/volumes)
 
