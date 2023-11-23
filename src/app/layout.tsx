@@ -1,7 +1,9 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
-import { BooksProvider } from "./books-provider";
+import { Inter } from "next/font/google";
+import { BooksProvider } from "./_components/books-provider";
 import Link from "next/link";
+import { Suspense } from "react";
+import { RootNavigationEvent } from "./_components/root-navigation";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -13,10 +15,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
+        <Suspense fallback={null}>
+          <RootNavigationEvent />
+        </Suspense>
         <nav className="bg-yellow-400 p-4">
           <div className="container ml-5 flex items-center justify-between">
             <div>
-              <Link href="/" className="text-white text-xl font-bold">
+              <Link href="/home" className="text-white text-xl font-bold">
                 Home
               </Link>
               <span className="mx-4 text-white">|</span>

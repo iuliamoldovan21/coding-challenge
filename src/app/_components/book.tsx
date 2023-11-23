@@ -1,4 +1,6 @@
 "use client";
+
+import { useMounted } from "../_hooks/useMounted";
 import { useBooksContext } from "./books-provider";
 import { useCallback, useMemo } from "react";
 
@@ -26,6 +28,7 @@ function ActionButton({ book }: { book: Book }) {
   const { addToReadingList, isBookInList, removeFromReadingList } =
     useBooksContext();
 
+  const isMounted = useMounted();
   const isInList = useMemo(
     () => isBookInList(book.id),
     [book.id, isBookInList]
@@ -43,10 +46,12 @@ function ActionButton({ book }: { book: Book }) {
     [addToReadingList, isInList, removeFromReadingList]
   );
 
+  if (!isMounted) return null;
+
   return (
     <button
       onClick={() => toggleBookInList(book)}
-      className={`text-white p-2  w-80 self-end mr-10 rounded ${
+      className={`text-white p-2  w-80 self-center md:self-end md:mr-10 rounded ${
         isInList
           ? "bg-red-400 hover:bg-red-500"
           : "bg-yellow-500 hover:bg-yellow-600"
