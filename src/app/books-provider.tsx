@@ -5,6 +5,7 @@ import {
   createContext,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 import { Book } from "./book";
@@ -12,20 +13,42 @@ import { Book } from "./book";
 type BooksContextType = {
   readingList: Book[] | [];
   addToReadingList: (book: Book) => void;
-  searchValue: string;
-  setSearchValue: (v: string) => void;
   isBookInList: (id: string) => boolean;
+  removeFromReadingList: (id: string) => void;
 };
 
 const BooksContext = createContext<BooksContextType>({} as BooksContextType);
 
 function BooksProvider({ children }: PropsWithChildren<{}>) {
-  const [readingList, setReadingList] = useState<Book[]>([]);
-  const [searchValue, setSearchValue] = useState("");
+  const isClient = typeof window !== "undefined";
+
+  const storedReadingList = isClient ? localStorage.getItem("readingList") : "";
+  const initialReadingList = storedReadingList
+    ? JSON.parse(storedReadingList)
+    : [];
+
+  const [readingList, setReadingList] = useState<Book[] | []>(
+    initialReadingList
+  );
+
+  useEffect(() => {
+    localStorage.setItem("readingList", JSON.stringify(readingList));
+  }, [readingList]);
 
   const addToReadingList = useCallback((book: Book) => {
     setReadingList((prev) => [...prev, book]);
   }, []);
+
+  const removeFromReadingList = useCallback(
+    (bookId: string) => {
+      const updatedReadingList = readingList.filter(
+        (book) => book.id !== bookId
+      );
+
+      setReadingList(updatedReadingList);
+    },
+    [readingList]
+  );
 
   const isBookInList = useCallback(
     (bookId: string) => {
@@ -40,9 +63,8 @@ function BooksProvider({ children }: PropsWithChildren<{}>) {
       value={{
         readingList,
         addToReadingList,
-        searchValue,
-        setSearchValue,
         isBookInList,
+        removeFromReadingList,
       }}
     >
       {children}
